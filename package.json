@@ -4,7 +4,7 @@
   "description": "Aggregate APIs and make a rolling average available via Firebase",
   "main": "app.js",
   "scripts": {
-    "start":"node app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -15,5 +15,9 @@
     "Bitcoin"
   ],
   "author": "Luke Pighetti",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "firebase-admin": "^5.12.1"
+  }
 }
