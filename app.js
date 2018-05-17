@@ -25,9 +25,9 @@ const db = admin.database()
 
 blockNotify(async (blockHash) => {
   console.log(`blockNotify! ${blockHash}`)
-  const result = await getChain(blockHash)
+  const resultChain = await getChain(blockHash)
   const ref = db.ref('latestData').child('chain')
-  ref.set(result)
+  ref.set(resultChain)
 })
 
 
@@ -35,13 +35,21 @@ blockNotify(async (blockHash) => {
 //    get CoinGecko data
 //    get Pool data
 //    push it to latestData
-setInterval(main, 15*1000)
+
+//todo set interval to 15 seconds
+setInterval(main, 5*1000)
+
+var lastPool = ''
 
 async function main(){
-  console.log(`lets getPool`)
-  const result = await getPool()
+  const resultPool = await getPool()
   const ref = db.ref('latestData').child('pool')
-  ref.set(result)
+
+  if(resultPool && objectsAreDifferent(resultPool,lastPool)){
+    lastPool = resultPool
+    await ref.set(resultPool)
+    console.log(`saved new pool data`)
+  }
 }
 
 //  listen for update to latestData.chain
@@ -51,4 +59,9 @@ async function main(){
 
 
 
-console.log('it works!')
+//////////////////
+
+
+function objectsAreDifferent(object1, object2){
+  return JSON.stringify(object1) != JSON.stringify(object2)
+}
