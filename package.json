@@ -1,0 +1,19 @@
+{
+  "name": "pigeon-api",
+  "version": "1.0.0",
+  "description": "Aggregate APIs and make a rolling average available via Firebase",
+  "main": "app.js",
+  "scripts": {
+    "start":"node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Pigeoncoin",
+    "API",
+    "Firebase",
+    "CoinGecko",
+    "Bitcoin"
+  ],
+  "author": "Luke Pighetti",
+  "license": "ISC"
+}
