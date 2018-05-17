@@ -1,9 +1,10 @@
 {
+	"instructions":"rename this file to config.json and edit these settings",
 	"rpc": {
 		"protocol": "http",
-		"user": "login",
+		"user": "username",
 		"pass": "password",
-		"host": "foo.bar.com",
+		"host": "coind.rpchost.com",
 		"port": "8333"
 	},
 	"http": {
