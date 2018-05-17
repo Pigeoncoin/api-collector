@@ -14,7 +14,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey),
   databaseURL: "https://pigeoncoin-api.firebaseio.com",
   databaseAuthVariableOverride: {
-    uid: "api-worker-zyU2Rpf8G4"
+    uid: config.firebase.customUid
   }
 });
 

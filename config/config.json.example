@@ -1,0 +1,17 @@
+{
+	"rpc": {
+		"protocol": "http",
+		"user": "login",
+		"pass": "password",
+		"host": "foo.bar.com",
+		"port": "8333"
+	},
+	"http": {
+		"host": "localhost",
+		"port": 8080,
+		"exclusive": true
+	},
+	"firebase":{
+		"customUid":"api-aggregator"
+	}
+}
