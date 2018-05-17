@@ -6,6 +6,8 @@ const admin = require('firebase-admin')
 const blockNotify = require('./lib/blockNotify.js')
 const getChain = require('./lib/getChain.js')
 const getPool = require('./lib/getPool.js')
+const getMarket = require('./lib/getMarket.js')
+
 
 // initialize firebase
 admin.initializeApp({
@@ -19,7 +21,7 @@ admin.initializeApp({
 const db = admin.database()
 
 
-//  listen for new blocks
+//  wait for new blocks
 //    get blockchain data
 //    push it to latestData
 
@@ -31,17 +33,16 @@ blockNotify(async (blockHash) => {
 })
 
 
-//  wait 15 seconds
-//    get CoinGecko data
-//    get Pool data
+//  every 15 seconds
+//    get pool data
 //    push it to latestData
 
 //todo set interval to 15 seconds
-setInterval(main, 5*1000)
+setInterval(refreshPool, 5*1000)
 
 var lastPool = ''
 
-async function main(){
+async function refreshPool(){
   const resultPool = await getPool()
   const ref = db.ref('latestData').child('pool')
 
@@ -49,6 +50,27 @@ async function main(){
     lastPool = resultPool
     await ref.set(resultPool)
     console.log(`saved new pool data`)
+  }
+}
+
+
+//  every 60 seconds
+//    get market data
+//    push it to latestData
+
+//todo set interval to 60 seconds
+setInterval(refreshMarket, 7*1000)
+
+var lastMarket = ''
+
+async function refreshMarket(){
+  const resultMarket = await getMarket()
+  const ref = db.ref('latestData').child('Market')
+
+  if(resultMarket && objectsAreDifferent(resultMarket,lastMarket)){
+    lastMarket = resultMarket
+    await ref.set(resultMarket)
+    console.log(`saved new Market data`)
   }
 }
 
