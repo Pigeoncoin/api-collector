@@ -4,7 +4,7 @@ const firebaseConfig = require('./config/serviceAccountKey.json')
 const axios = require('axios')
 const admin = require('firebase-admin')
 
-const BlockNotify = require('./lib/BlockNotify.js')
+const blockNotify = require('./lib/blockNotify.js')
 const getBlockchain = require('./lib/getBlockchain.js')
 
 
@@ -12,7 +12,7 @@ const getBlockchain = require('./lib/getBlockchain.js')
 //    get blockchain data
 //    push it to latestData
 
-new BlockNotify(async (blockHash) => {
+blockNotify(async (blockHash) => {
   console.log(`blockNotify! ${blockHash}`)
   const resultBlockchain = await getBlockchain(blockHash)
   console.log(`resultBlockchain`)
