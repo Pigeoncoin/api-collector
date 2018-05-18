@@ -13,6 +13,7 @@
 		"exclusive": true
 	},
 	"firebase":{
+		"databaseURL":"https://yourproject.firebaseio.com",
 		"customUid":"api-aggregator"
 	}
 }

@@ -12,7 +12,7 @@ const getMarket = require('./lib/getMarket.js')
 // initialize firebase
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountKey),
-  databaseURL: "https://pigeoncoin-api.firebaseio.com",
+  databaseURL: config.firebase.databaseURL,
   databaseAuthVariableOverride: {
     uid: config.firebase.customUid
   }
