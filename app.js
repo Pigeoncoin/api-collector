@@ -49,12 +49,8 @@ async function refreshPool(){
 
   if(resultPool && objectsAreDifferent(resultPool,lastPool)){
     lastPool = resultPool
-    resultPool.timestamp = secondsTimestamp()
     await ref.set(resultPool)
     console.log(`[pool] saved new data`)
-  }
-  else{
-    console.log(`[pool] no new data`)
   }
 }
 
@@ -74,12 +70,8 @@ async function refreshMarket(){
 
   if(resultMarket && objectsAreDifferent(resultMarket, lastMarket)){
     lastMarket = resultMarket
-    resultMarket.timestamp = secondsTimestamp()
     await ref.set(resultMarket)
     console.log(`[market] saved new data`)
-  }
-  else{
-    console.log(`[market] no new data`)
   }
 }
 
@@ -89,13 +81,16 @@ async function refreshMarket(){
 //      save rollingAverage to averageHistory
 
 
-
 //////////////////
 
-function secondsTimestamp(){
-  return Math.floor(Date.now() / 1000)
-}
-
 function objectsAreDifferent(object1, object2){
-  return JSON.stringify(object1) != JSON.stringify(object2)
+  // copy object but sever reference
+  const testObject1 = Object.assign({}, object1)
+  const testObject2 = Object.assign({}, object2)
+
+  // delete timestamps
+  delete testObject1.timestamp
+  delete testObject2.timestamp
+
+  return JSON.stringify(testObject1) != JSON.stringify(testObject2)
 }
