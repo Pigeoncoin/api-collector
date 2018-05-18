@@ -26,11 +26,11 @@ const db = admin.database()
 //    push it to latestData
 
 blockNotify(async (blockHash) => {
-  console.log(`[blockNotify] new block! ${blockHash}`)
+  console.log(`[blockNotify] new block!`)
   const resultChain = await getChain(blockHash)
   const ref = db.ref('latestData').child('chain')
   ref.set(resultChain)
-  console.log(`[chain] saved new data`)
+  console.log(`[chain] saved new ${resultChain.height}`)
 })
 
 
