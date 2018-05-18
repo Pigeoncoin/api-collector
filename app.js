@@ -29,8 +29,11 @@ blockNotify(async (blockHash) => {
   console.log(`[blockNotify] new block!`)
   const resultChain = await getChain(blockHash)
   const ref = db.ref('latestData').child('chain')
+
   ref.set(resultChain)
   console.log(`[chain] saved new ${resultChain.height}`)
+
+  updateAverages()
 })
 
 
@@ -80,6 +83,36 @@ async function refreshMarket(){
 //    if height % 84 == 0
 //      save rollingAverage to averageHistory
 
+async function updateAverages(){
+  let snap = await db.ref('latestData').once('value')
+  const latestData = snap.val()
+
+  const averageRef = db.ref('rollingAverage')
+  let averageSnap = await averageRef.once('value')
+  const currentAverage = averageSnap.val()
+
+  if(currentAverage){
+    // there is already one there
+    console.log(`[updateAverages] we found an average`)
+
+    // add one
+
+    currentAverage.count++
+
+    // sum both objects
+
+    // update firebase
+
+    await averageRef.set(currentAverage)
+  }
+  else{
+    // create a new one
+    console.log(`[updateAverages] make a new average!`)
+    const createAverage = Object.assign({count:1}, latestData)
+    await averageRef.set(createAverage)
+  }
+
+}
 
 //////////////////
 
