@@ -7,6 +7,7 @@ const blockNotify = require('./lib/blockNotify.js')
 const getChain = require('./lib/getChain.js')
 const getPool = require('./lib/getPool.js')
 const getMarket = require('./lib/getMarket.js')
+const getAverage = require('./lib/getAverage.js')
 
 
 // initialize firebase
@@ -78,6 +79,7 @@ async function refreshMarket(){
   }
 }
 
+
 //  listen for update to latestData.chain
 //    add to rollingAverage
 //    if height % 84 == 0
@@ -92,21 +94,11 @@ async function updateAverages(){
   const currentAverage = averageSnap.val()
 
   if(currentAverage){
-    // there is already one there
-    console.log(`[updateAverages] we found an average`)
-
-    // add one
-
-    currentAverage.count++
-
-    // sum both objects
-
-    // update firebase
-
-    await averageRef.set(currentAverage)
+    const updatedAverage = getAverage(latestData, currentAverage)
+    await averageRef.set(updatedAverage)
+    console.log(`[updateAverages] did an average!`)
   }
   else{
-    // create a new one
     console.log(`[updateAverages] make a new average!`)
     const createAverage = Object.assign({count:1}, latestData)
     await averageRef.set(createAverage)
@@ -115,6 +107,8 @@ async function updateAverages(){
 }
 
 //////////////////
+
+
 
 function objectsAreDifferent(object1, object2){
   // copy object but sever reference
