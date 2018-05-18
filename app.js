@@ -26,10 +26,11 @@ const db = admin.database()
 //    push it to latestData
 
 blockNotify(async (blockHash) => {
-  console.log(`blockNotify! ${blockHash}`)
+  console.log(`[blockNotify] new block! ${blockHash}`)
   const resultChain = await getChain(blockHash)
   const ref = db.ref('latestData').child('chain')
   ref.set(resultChain)
+  console.log(`[chain] saved new data`)
 })
 
 
@@ -50,7 +51,10 @@ async function refreshPool(){
     lastPool = resultPool
     resultPool.timestamp = secondsTimestamp()
     await ref.set(resultPool)
-    console.log(`saved new pool data`)
+    console.log(`[pool] saved new data`)
+  }
+  else{
+    console.log(`[pool] no new data`)
   }
 }
 
@@ -66,13 +70,16 @@ var lastMarket = ''
 
 async function refreshMarket(){
   const resultMarket = await getMarket()
-  const ref = db.ref('latestData').child('Market')
+  const ref = db.ref('latestData').child('market')
 
   if(resultMarket && objectsAreDifferent(resultMarket, lastMarket)){
     lastMarket = resultMarket
     resultMarket.timestamp = secondsTimestamp()
     await ref.set(resultMarket)
-    console.log(`saved new Market data`)
+    console.log(`[market] saved new data`)
+  }
+  else{
+    console.log(`[market] no new data`)
   }
 }
 
