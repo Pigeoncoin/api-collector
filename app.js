@@ -26,12 +26,12 @@ const db = admin.database()
 //    get blockchain data
 //    push it to latestData
 
-blockNotify(async (blockHash) => {
+blockNotify( async (blockHash) => {
   console.log(`[blockNotify] new block!`)
   const resultChain = await getChain(blockHash)
   const ref = db.ref('latestData').child('chain')
 
-  ref.set(resultChain)
+  await ref.set(resultChain)
   console.log(`[chain] saved new ${resultChain.height}`)
 
   updateAverages()
@@ -80,7 +80,7 @@ async function refreshMarket(){
 }
 
 
-//  listen for update to latestData.chain
+//  call from blockNotify
 //    add to rollingAverage
 //    if height % 84 == 0
 //      save rollingAverage to averageHistory
@@ -93,22 +93,31 @@ async function updateAverages(){
   let averageSnap = await averageRef.once('value')
   const currentAverage = averageSnap.val()
 
-  if(currentAverage){
+  try {
+    if (!currentAverage.count || !currentAverage.chain || !currentAverage.market || !currentAverage.pool){
+      throw Error('[updateAverages] currentAverage is incomplete')
+    }
     const updatedAverage = getAverage(latestData, currentAverage)
     await averageRef.set(updatedAverage)
     console.log(`[updateAverages] did an average!`)
   }
-  else{
-    console.log(`[updateAverages] make a new average!`)
-    const createAverage = Object.assign({count:1}, latestData)
-    await averageRef.set(createAverage)
+  catch (e) {
+    try{
+      if (!latestData.chain || !latestData.market || !latestData.pool){
+        throw Error('[updateAverages] latestData hasnt populated yet')
+      }
+      console.log(`[updateAverages] make a new average!`)
+      const createAverage = Object.assign({count:1}, latestData)
+      await averageRef.set(createAverage)
+    }
+    catch (e) {
+      console.log(`[updateAverages] waiting for latestData to populate`)
+    }
   }
-
 }
 
+
 //////////////////
-
-
 
 function objectsAreDifferent(object1, object2){
   // copy object but sever reference
