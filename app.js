@@ -48,6 +48,7 @@ async function refreshPool(){
 
   if(resultPool && objectsAreDifferent(resultPool,lastPool)){
     lastPool = resultPool
+    resultPool.timestamp = secondsTimestamp()
     await ref.set(resultPool)
     console.log(`saved new pool data`)
   }
@@ -67,8 +68,9 @@ async function refreshMarket(){
   const resultMarket = await getMarket()
   const ref = db.ref('latestData').child('Market')
 
-  if(resultMarket && objectsAreDifferent(resultMarket,lastMarket)){
+  if(resultMarket && objectsAreDifferent(resultMarket, lastMarket)){
     lastMarket = resultMarket
+    resultMarket.timestamp = secondsTimestamp()
     await ref.set(resultMarket)
     console.log(`saved new Market data`)
   }
@@ -83,6 +85,9 @@ async function refreshMarket(){
 
 //////////////////
 
+function secondsTimestamp(){
+  return Math.floor(Date.now() / 1000)
+}
 
 function objectsAreDifferent(object1, object2){
   return JSON.stringify(object1) != JSON.stringify(object2)
