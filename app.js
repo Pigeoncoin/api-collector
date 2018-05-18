@@ -34,7 +34,7 @@ blockNotify( async (blockHash) => {
   await ref.set(resultChain)
   console.log(`[chain] saved new ${resultChain.height}`)
 
-  updateAverages()
+  rollingAverage()
 })
 
 
@@ -85,36 +85,17 @@ async function refreshMarket(){
 //    if height % 84 == 0
 //      save rollingAverage to averageHistory
 
-async function updateAverages(){
-  let snap = await db.ref('latestData').once('value')
-  const latestData = snap.val()
+async function rollingAverage(){
+  const latestRef = db.ref('latestData')
+  const averageRef = db.ref('averageData')
 
-  const averageRef = db.ref('rollingAverage')
-  let averageSnap = await averageRef.once('value')
-  const currentAverage = averageSnap.val()
+  const newAverage = await getAverage(latestRef, averageRef)
 
-  try {
-    if (!currentAverage.count || !currentAverage.chain || !currentAverage.market || !currentAverage.pool){
-      throw Error('[updateAverages] currentAverage is incomplete')
-    }
-    const updatedAverage = getAverage(latestData, currentAverage)
-    await averageRef.set(updatedAverage)
-    console.log(`[updateAverages] did an average!`)
-  }
-  catch (e) {
-    try{
-      if (!latestData.chain || !latestData.market || !latestData.pool){
-        throw Error('[updateAverages] latestData hasnt populated yet')
-      }
-      console.log(`[updateAverages] make a new average!`)
-      const createAverage = Object.assign({count:1}, latestData)
-      await averageRef.set(createAverage)
-    }
-    catch (e) {
-      console.log(`[updateAverages] waiting for latestData to populate`)
-    }
+  if(newAverage){
+    await averageRef.set(newAverage)
   }
 }
+
 
 
 //////////////////
