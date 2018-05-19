@@ -31,7 +31,7 @@ blockNotify( async (blockHash) => {
   const resultChain = await getChain(blockHash)
   const ref = db.ref('latestData').child('chain')
 
-  await ref.set(resultChain)
+  await ref.update(resultChain)
   console.log(`[chain] saved new ${resultChain.height}`)
 
   rollingAverage()
@@ -53,7 +53,7 @@ async function refreshPool(){
 
   if(resultPool && objectsAreDifferent(resultPool,lastPool)){
     lastPool = resultPool
-    await ref.set(resultPool)
+    await ref.update(resultPool)
     console.log(`[pool] saved new data`)
   }
 }
@@ -74,7 +74,7 @@ async function refreshMarket(){
 
   if(resultMarket && objectsAreDifferent(resultMarket, lastMarket)){
     lastMarket = resultMarket
-    await ref.set(resultMarket)
+    await ref.update(resultMarket)
     console.log(`[market] saved new data`)
   }
 }
@@ -92,9 +92,22 @@ async function rollingAverage(){
   const newAverage = await getAverage(latestRef, averageRef)
 
   if(newAverage){
-    await averageRef.set(newAverage)
+    await averageRef.update(newAverage)
   }
+
+
+  const historyRef = db.ref('historyData')
+  const height = newAverage.chain.height
+
+  // todo change 24 to 84
+  if(height % 12 == 11){
+    historyRef.child(height).update(newAverage)
+    averageRef.remove()
+  }
+  console.log(`[rollingAverage] height % 12 is ${height % 12}`)
 }
+
+
 
 
 
