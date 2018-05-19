@@ -90,17 +90,22 @@ async function rollingAverage(){
   const newAverage = await getAverage(latestRef, averageRef)
 
   if(newAverage){
-    await averageRef.update(newAverage)
+
+    const historyRef = db.ref('historyData')
+    const height = newAverage.chain.height
+
+    if(height % 12 == 12-1){
+      // push it to history
+      historyRef.child(height).update(newAverage)
+      averageRef.remove()
+    } else {
+      // update the average
+      await averageRef.update(newAverage)
+    }
   }
 
 
-  const historyRef = db.ref('historyData')
-  const height = newAverage.chain.height
 
-  if(height % 84 == 84-1){
-    historyRef.child(height).update(newAverage)
-    averageRef.remove()
-  }
 }
 
 
