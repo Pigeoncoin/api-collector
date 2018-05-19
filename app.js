@@ -42,8 +42,7 @@ blockNotify( async (blockHash) => {
 //    get pool data
 //    push it to latestData
 
-//todo set interval to 15 seconds
-setInterval(refreshPool, 5*1000)
+setInterval(refreshPool, 15*1000)
 
 var lastPool = ''
 
@@ -63,8 +62,7 @@ async function refreshPool(){
 //    get market data
 //    push it to latestData
 
-//todo set interval to 60 seconds
-setInterval(refreshMarket, 7*1000)
+setInterval(refreshMarket, 60*1000)
 
 var lastMarket = ''
 
@@ -99,12 +97,10 @@ async function rollingAverage(){
   const historyRef = db.ref('historyData')
   const height = newAverage.chain.height
 
-  // todo change 24 to 84
-  if(height % 12 == 11){
+  if(height % 84 == 84-1){
     historyRef.child(height).update(newAverage)
     averageRef.remove()
   }
-  console.log(`[rollingAverage] height % 12 is ${height % 12}`)
 }
 
 
