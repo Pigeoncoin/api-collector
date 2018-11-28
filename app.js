@@ -80,7 +80,7 @@ async function refreshMarket(){
 
 //  call from blockNotify
 //    add to rollingAverage
-//    if height % 84 == 0
+//    if height % 72 == 0
 //      save rollingAverage to averageHistory
 
 async function rollingAverage(){
@@ -93,7 +93,7 @@ async function rollingAverage(){
     const historyRef = db.ref('historyData')
     const height = newAverage.chain.height
 
-    if(height % 84 == 84-1){
+    if(height % 72 == 72-1){
       // push it to history
       historyRef.child(height).update(newAverage)
       averageRef.remove()
